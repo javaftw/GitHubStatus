@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GitHub Status: </title>
+    <style>
+
+        * {
+            font-family: Helvetica;
+            font-weight: 100;
+        }
+
+        body {
+            -webkit-transition: background 500ms color 500ms;
+            transition: background 500ms color 500ms;
+        }
+        
+        .good {
+            color: green;
+        }
+
+        .minor {
+            color: orange;
+        }
+
+        .major {
+            color: red;
+        }
+
+        .center {
+            text-align: center;
+            width: 250px;
+            padding: 20px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            -webkit-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+    <script src="http://code.jquery.com/jquery-2.1.3.min.js"></script>
+</head>
+<body>
+
+    <div class="wrapper">
+        <div class="center">
+            <h1>GitHub Status: <span id="status"></span></h1>
+            <h3>Refreshing in <span id="time">10</span> seconds</h3><br><br><br>
+            Made with <span id="hearts">&hearts;</span> by <a href="http://github.com/javaftw/">Tarun Boddupalli</a>
+        </div>
+    </div>
+
+    <script>
+        var counter = 10, status = "good", dark = false;
+
+        $("#hearts").click(function() {
+            dark = !dark;
+            if (dark) {
+                $("body").css({
+                    color: "white",
+                    background: "black"
+                });
+            } else {
+                $("body").css({
+                    color: "black",
+                    background: "white"
+                });
+            }
+        })
+
+        
+        setInterval(function() {
+            if (counter === 1) {
+                reloadScript("https://status.github.com/api/status.json?callback=request");
+                counter = 11;
+            }
+            counter--;
+            document.getElementById('time').innerHTML = counter;
+        }, 1000);
+
+        function request(r) {
+            status = r.status;
+            document.title = "GitHub Status: " + status;
+            $('#status').attr('class', status);
+            $('#status').html(status.toUpperCase());
+        }
+
+        function reloadScript(src) {
+            $('script[src="' + src + '"]').remove();
+            $('<script>').attr('src', src).appendTo('#script-reload');
+        }
+    </script>
+
+    <div id="script-reload">
+        <script src="https://status.github.com/api/status.json?callback=request"></script>
+    </div>
+</body>
+</html>
